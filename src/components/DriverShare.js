@@ -2,71 +2,68 @@
 import React, { useState, useEffect } from 'react';
 import { ref, set } from 'firebase/database';
 import { database } from '../firebase';
-import './DriverShare.css'; // Assuming you create a separate CSS file for styling
+import './DriverShare.css';
 
 const DriverShare = () => {
   const [shareId, setShareId] = useState('');
   const [sharePass, setSharePass] = useState('');
-  const [secretKey, setSecretKey] = useState(''); // New state for secret key
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const [secretKey, setSecretKey] = useState('');
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(
+    let watchId;
+    if (isSharing) {
+      // Start watching the position in real-time
+      watchId = navigator.geolocation.watchPosition(
         (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
+          const { latitude, longitude } = position.coords;
+
+          // Update location in Firebase every second
+          const locationRef = ref(database, 'locations/' + shareId);
+          set(locationRef, {
+            latitude,
+            longitude,
+            sharePass
+          });
         },
         (error) => {
-          console.error("Error getting location: ", error);
-          alert("Error getting location: " + error.message);
-        }
+          console.error('Error getting location: ', error);
+          alert('Error getting location: ' + error.message);
+        },
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
       );
-
-      // Cleanup function to stop watching position
-      return () => navigator.geolocation.clearWatch(watchId);
-    } else {
-      alert("Geolocation is not supported by this browser.");
     }
-  }, []);
 
-  const handleShare = (e) => {
+    // Cleanup: stop watching when component is unmounted or sharing stops
+    return () => {
+      if (watchId) navigator.geolocation.clearWatch(watchId);
+    };
+  }, [isSharing, shareId, sharePass]);
+
+  const handleStartShare = (e) => {
     e.preventDefault();
-    
-    // Check if shareId, sharePass, and secretKey are provided
+
     if (!shareId || !sharePass || !secretKey) {
       alert('Please enter Share ID, Share Password, and Secret Key.');
       return;
     }
 
-    // Verify the secret key
+    // Verify secret key
     const correctSecretKey = 'nec@61';
     if (secretKey !== correctSecretKey) {
       alert('Invalid Secret Key. Please try again.');
       return;
     }
 
-    const locationRef = ref(database, 'locations/' + shareId);
-
-    set(locationRef, {
-      latitude: latitude,
-      longitude: longitude,
-      sharePass: sharePass,  // Ensure this is not an empty string
-    })
-      .then(() => {
-        alert('Location shared successfully!');
-      })
-      .catch((error) => {
-        console.error("Error sharing location: ", error);
-        alert('Error sharing location: ' + error.message);
-      });
+    // Start sharing location
+    setIsSharing(true);
+    alert('Location sharing started!');
   };
 
   return (
     <div className="driver-share-container">
       <h2>Share Your Location</h2>
-      <form onSubmit={handleShare} className="share-form">
+      <form onSubmit={handleStartShare} className="share-form">
         <input
           type="text"
           placeholder="Enter Share ID"
@@ -91,13 +88,8 @@ const DriverShare = () => {
           required
           className="input-field"
         />
-        <button type="submit" className="submit-button">Share Location</button>
+        <button type="submit" className="submit-button">Start Sharing</button>
       </form>
-      {latitude && longitude && (
-        <div className="location-display">
-          <p>Your current location: {latitude}, {longitude}</p>
-        </div>
-      )}
     </div>
   );
 };
