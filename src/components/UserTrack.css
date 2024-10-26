@@ -1,51 +1,157 @@
 /* src/components/UserTrack.css */
 
 .user-track-container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    background-color: #f9f9f9;
+  max-width: 500px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #e3f2fd, #ffffff);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-track-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  color: #007bff;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.track-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-field {
+  padding: 12px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.track-button, .submit-feedback-button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.track-button:hover, .submit-feedback-button:hover {
+  background: linear-gradient(90deg, #0056b3, #007bff);
+  transform: scale(1.05);
+}
+
+.track-button:active, .submit-feedback-button:active {
+  transform: scale(0.98);
+}
+.feedback-section {
+  margin-top: 25px;
+  padding: 15px;
+  background: linear-gradient(145deg, #ffffff, #e3f2fd);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+.feedback-section h3 {
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  color: #007bff;
+  text-align: center;
+}
+
+textarea.input-field {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 80px;
+  border: 1px solid #cfd8dc;
+  background: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Make textarea responsive */
+  max-width: 450px; /* Limit the width */
+}
+
+textarea.input-field:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.location-display {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f0f4f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  max-width: 500px;
+  width: 100%;
+}
+
+.feedback-section textarea {
+  margin-top: 10px;
+}
+
+.feedback-section .submit-feedback-button {
+  margin-top: 15px;
+  background-color: #007bff;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.feedback-section .submit-feedback-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.feedback-section .submit-feedback-button:active {
+  transform: scale(0.98);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .user-track-container, 
+  .location-display, 
+  textarea.input-field {
+    max-width: 90%; /* Adjust width for smaller screens */
   }
-  
-  h2 {
-    text-align: center;
-    color: #333;
+
+  h2, .feedback-section h3 {
+    font-size: 1.5em;
   }
-  
-  .track-form {
-    display: flex;
-    flex-direction: column;
+
+  .submit-feedback-button {
+    width: 100%;
+    max-width: 300px;
   }
-  
-  .input-field {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .track-button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .track-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .location-display {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 18px;
-    color: #333;
-  }
-  
+}
