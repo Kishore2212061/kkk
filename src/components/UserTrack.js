@@ -1,5 +1,5 @@
 // src/components/UserTrack.js
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, set } from 'firebase/database'; 
 import { database } from '../firebase'; 
 import { GoogleMap, LoadScript, Polyline } from '@react-google-maps/api';
@@ -11,9 +11,9 @@ const containerStyle = {
 };
 
 const polylineOptions = {
-  strokeColor: '#0000FF',
-  strokeOpacity: 1.0,
-  strokeWeight: 3,
+  strokeColor: 'blue',
+  strokeOpacity: 8.0,
+  strokeWeight: 7,
 };
 
 const UserTrack = () => {
@@ -25,6 +25,7 @@ const UserTrack = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+  const markerRef = useRef(null); // Reference for the marker
 
   const handleTrack = (e) => {
     e.preventDefault();
@@ -59,10 +60,10 @@ const UserTrack = () => {
     });
   };
 
-  const renderMarker = (map) => {
+  const initializeMarker = (map) => {
     if (location && map) {
       const AdvancedMarkerElement = window.google?.maps?.marker?.AdvancedMarkerElement;
-      const marker = AdvancedMarkerElement
+      markerRef.current = AdvancedMarkerElement
         ? new AdvancedMarkerElement({
             map: map,
             position: location,
@@ -75,6 +76,13 @@ const UserTrack = () => {
           });
     }
   };
+
+  // Update marker position on location change
+  useEffect(() => {
+    if (markerRef.current && location) {
+      markerRef.current.setPosition(location);
+    }
+  }, [location]);
 
   return (
     <div className="user-track-container">
@@ -126,7 +134,7 @@ const UserTrack = () => {
               mapContainerStyle={containerStyle}
               center={location}
               zoom={15}
-              onLoad={renderMarker}
+              onLoad={initializeMarker}
             >
               {path.length > 1 && <Polyline path={path} options={polylineOptions} />}
             </GoogleMap>
